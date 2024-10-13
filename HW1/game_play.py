@@ -68,7 +68,8 @@ class GamePlay:
                     self.__screen.draw_circle_falling(circle_x_i, circle_y, self.get_player_color())
                     self.__screen.draw_circle(circle_x, circle_y, self.get_player_color())
                     self.check_win()
-                    self.change_player_id()
+                    if not self.__game_over:
+                        self.change_player_id()
 
     def play(self) -> int:
         cv.namedWindow(self.__screen.GAME_NAME)
