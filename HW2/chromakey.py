@@ -50,7 +50,7 @@ class ChromaKey():
     def process(self):
         cv.namedWindow(self.window_name)
         cv.setMouseCallback(self.window_name, self.__mouse_event)
-        cv.createTrackbar("chromakey_rate", self.window_name, 0, 255, self.__trackbar_event)
+        cv.createTrackbar("key_rate", self.window_name, 0, 255, self.__trackbar_event)
 
         video = cv.VideoCapture(self.video_filename)
         while video.isOpened():
