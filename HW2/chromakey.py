@@ -53,8 +53,11 @@ class ChromaKey():
                 else:
                     self.__update_mask()
 
-                if cv.waitKey(25) == 27:
+                key = cv.waitKey(25)
+                if key == 27:
                     break
+                if key == ord('z'):
+                    self.color_chosen = False
             else:
                 break
         video.release()
