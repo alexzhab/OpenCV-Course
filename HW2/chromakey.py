@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 
 class ChromaKey():
-    def __init__(self, window_size, video_filename, background_filename, color_dstrb=100, chromakey_rate=100):
+    def __init__(self, window_size, video_filename, background_filename):
         self.window_size = window_size
         self.window_name = "chromakey"
         self.video_filename = video_filename
@@ -11,9 +11,7 @@ class ChromaKey():
         self.frame = None
 
         self.color_chosen = False
-        self.color = np.zeros(3)
-        self.color_dstrb = color_dstrb
-        self.chromakey_rate = chromakey_rate
+        self.color = None
 
     def __update_mask(self):
         rgb_index, color_max = np.argmax(self.color), np.max(self.color)
