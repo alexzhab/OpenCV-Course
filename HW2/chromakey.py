@@ -19,7 +19,7 @@ class ChromaKey():
         lower_color = np.array([255, l1, l2])
         upper_color = np.array([255, u1, u2])
         lower_color[0] = max(int(self.color[0]) - 20, 0)
-        upper_color[0] = min(int(self.color[0]) + 20, 255)
+        upper_color[0] = min(int(self.color[0]) + 20, 180)
 
         frame_hsv = cv.cvtColor(self.frame, cv.COLOR_BGR2HSV)
         mask = cv.inRange(frame_hsv, lower_color, upper_color)
