@@ -14,24 +14,20 @@ class ChromaKey():
         self.color = None
 
     def __update_mask(self):
-        rgb_index, color_max = np.argmax(self.color), np.max(self.color)
-        lower_color = np.zeros(3)
-        upper_color = np.zeros(3)
-        for i, c in enumerate(self.color):
-            if i != rgb_index:
-                lower_color[i] = 0
-                upper_color[i] = self.chromakey_rate
-            else:
-                lower_color[i] = max(color_max - self.color_dstrb, 0)
-                upper_color[i] = min(color_max + self.color_dstrb, 255)
+        l1, u1 = (0, 50) if self.color[1] < 50 else (50, 255)
+        l2, u2 = (0, 50) if self.color[2] < 50 else (50, 255)
+        lower_color = np.array([255, l1, l2])
+        upper_color = np.array([255, u1, u2])
+        lower_color[0] = max(int(self.color[0]) - 20, 0)
+        upper_color[0] = min(int(self.color[0]) + 20, 255)
 
-        mask = cv.inRange(self.frame, lower_color, upper_color)
+        frame_hsv = cv.cvtColor(self.frame, cv.COLOR_BGR2HSV)
+        mask = cv.inRange(frame_hsv, lower_color, upper_color)
         masked_frame = np.copy(self.frame)
         masked_frame[mask != 0] = [0, 0, 0]
 
         background_copy = np.copy(self.background_img)
         background_copy[mask == 0] = [0, 0, 0]
-
         self.frame = background_copy + masked_frame
         cv.imshow(self.window_name, self.frame)
 
@@ -39,16 +35,12 @@ class ChromaKey():
         if not self.color_chosen:
             if event == cv.EVENT_LBUTTONDOWN:
                 self.color_chosen = True
-                self.color = np.array(self.frame[y, x], dtype=int)
-
-    def __trackbar_event(self, val):
-        if self.color_chosen:
-            self.chromakey_rate = val
+                frame_hsv = cv.cvtColor(self.frame, cv.COLOR_BGR2HSV)
+                self.color = frame_hsv[y, x]
 
     def process(self):
         cv.namedWindow(self.window_name)
         cv.setMouseCallback(self.window_name, self.__mouse_event)
-        cv.createTrackbar("key_rate", self.window_name, 0, 255, self.__trackbar_event)
 
         video = cv.VideoCapture(self.video_filename)
         while video.isOpened():
