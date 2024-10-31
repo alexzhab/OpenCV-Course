@@ -28,13 +28,13 @@
 
 Чтобы сделать переход между фоном и передним планом более естественным, добавим блюр. Выделим контуры на бинарной маске и нарисуем их на пустом изображении:
 
-`contours, _ = cv.findContours(mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)`
+`contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)`
 
-`cv.drawContours(contours_img, contours, -1, (255, 255, 255), 3)`
+`cv2.drawContours(contours_img, contours, -1, (255, 255, 255), 3)`
 
 Найдём полностью размытое изображение и наложим его на итоговое изображение в точках контура:
 
-`blurred_img = cv.GaussianBlur(frame, (21, 21), 0)`
+`blurred_img = cv2.GaussianBlur(frame, (21, 21), 0)`
 
 `frame = np.where(contours_img == np.array([255, 255, 255]), blurred_img, frame)`
 
