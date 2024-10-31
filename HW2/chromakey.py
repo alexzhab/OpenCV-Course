@@ -22,13 +22,22 @@ class ChromaKey():
         upper_color[0] = min(int(self.color[0]) + 20, 180)
 
         frame_hsv = cv.cvtColor(self.frame, cv.COLOR_BGR2HSV)
+        
         mask = cv.inRange(frame_hsv, lower_color, upper_color)
         masked_frame = np.copy(self.frame)
         masked_frame[mask != 0] = [0, 0, 0]
 
         background_copy = np.copy(self.background_img)
         background_copy[mask == 0] = [0, 0, 0]
+
+        contours_img = np.zeros(self.frame.shape, np.uint8)
+        contours, _ = cv.findContours(mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+        cv.drawContours(contours_img, contours, -1, (255, 255, 255), 3)
+
         self.frame = background_copy + masked_frame
+        blurred_img = cv.GaussianBlur(self.frame, (21, 21), 0)
+        self.frame = np.where(contours_img == np.array([255, 255, 255]), blurred_img, self.frame)
+
         cv.imshow(self.window_name, self.frame)
 
     def __mouse_event(self, event, x, y, flags, param):
