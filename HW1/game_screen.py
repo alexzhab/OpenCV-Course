@@ -69,6 +69,7 @@ class GameScreen:
                 cv.waitKey(20)
                 self.draw_circle(x, y, self.WHITE_COLOR)
                 cv.imshow(self.GAME_NAME, self.__image)
+                cv.waitKey(20)
 
     def get_map_circles_players(self) -> list:
         return self.__map_circles_players

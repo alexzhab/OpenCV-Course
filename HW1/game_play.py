@@ -9,6 +9,10 @@ class GamePlay:
         self.__player_changed = True
         self.__game_over = False
         self.__screen = GameScreen(height, width)
+        self.__mouse_clicked = False
+        self.__circle_x_i = -1
+        self.__circle_x = None
+        self.__circle_y = None
 
     def change_player_id(self):
         self.__player_id = 3 - self.__player_id
@@ -54,27 +58,30 @@ class GamePlay:
         global ix
         if not self.__game_over:
             if event == cv.EVENT_MOUSEMOVE:
-                self.__player_changed = False
                 self.__screen.draw_rectangle(0, self.__screen.DIAMETER, 
                                              self.__screen.get_width(), 2 * self.__screen.DIAMETER, 
                                              self.__screen.WHITE_COLOR)
                 self.__screen.draw_circle(x, self.__screen.DIAMETER + self.__screen.RADIUS, self.get_player_color())
                 ix = x
             elif event == cv.EVENT_LBUTTONDOWN:
-                circle_x_i, circle_x = self.__screen.find_closest_circle(ix)
-                circle_y = self.__screen.find_empty_circle(circle_x, self.__player_id)
-                if circle_y != None:
-                    self.__screen.draw_rectangle(0, 0, self.__screen.get_width(), self.__screen.DIAMETER, self.__screen.WHITE_COLOR)
-                    self.__screen.draw_circle_falling(circle_x_i, circle_y, self.get_player_color())
-                    self.__screen.draw_circle(circle_x, circle_y, self.get_player_color())
-                    self.check_win()
-                    if not self.__game_over:
-                        self.change_player_id()
+                self.__mouse_clicked = True
+                self.__circle_x_i, self.__circle_x = self.__screen.find_closest_circle(ix)
+                self.__circle_y = self.__screen.find_empty_circle(self.__circle_x, self.__player_id)
 
     def play(self) -> int:
         cv.namedWindow(self.__screen.GAME_NAME)
         cv.setMouseCallback(self.__screen.GAME_NAME, self.mouse_event)
         while True:
+            if self.__mouse_clicked:
+                if self.__circle_y is not None:
+                    self.__screen.draw_rectangle(0, 0, self.__screen.get_width(), self.__screen.DIAMETER, self.__screen.WHITE_COLOR)
+                    self.__screen.draw_circle_falling(self.__circle_x_i, self.__circle_y, self.get_player_color())
+                    self.__screen.draw_circle(self.__circle_x, self.__circle_y, self.get_player_color())
+                    self.check_win()
+                    if not self.__game_over:
+                        self.change_player_id()
+                self.__mouse_clicked = False
+
             if self.__game_over:
                 self.__screen.draw_rectangle(0, 0,
                                              self.__screen.get_width(), 2 * self.__screen.DIAMETER, 
@@ -94,7 +101,8 @@ class GamePlay:
                                              self.__screen.get_width(), 2 * self.__screen.DIAMETER,
                                              self.__screen.WHITE_COLOR)
                 self.__screen.put_text(f"Player {self.__player_id} goes...", 0)
-            
+                self.__player_changed = False
+
             cv.imshow(self.__screen.GAME_NAME, self.__screen.get_image())
             key = cv.waitKey(15)
             if key == 27:
