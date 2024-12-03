@@ -16,12 +16,12 @@
 
 4. С помощью `cv2.matchTemplate` найдем позиции крестиков на изображении.
 
-<img src="found_crosses/02.jpg" alt="found_crosses"  width="400" />
+<img src="found_crosses/02.png" alt="found_crosses"  width="400" />
 
 5. Найдём квадранты сетки, где лежат крестики, и построим на них красные 3D конусы.
 
-<img src="res/02.jpg" alt="res"  width="400" />
+<img src="res/02.png" alt="res"  width="400" />
 
 Ещё примеры:
 
-<img src="res/08.jpg" alt="res"  width="400" />
+<img src="res/08.png" alt="res"  width="400" />
