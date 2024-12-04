@@ -2,11 +2,11 @@
 
 #### Описание алгоритма
 
-1. Рассмотрим следующее изображение.
+1. Рассмотрим следующее изображение шахматной доски.
 
 <img src="samples/left02.jpg" alt="orig"  width="400" />
 
-2. Уберем искажение с изображения шахматной доски с помощью калибровки камеры.
+2. Сделаем калибровку камеры с помощью `cv2.calibrateCamera` и уберём искажение с помощью `cv2.initUndistortRectifyMap` и `cv2.remap`.
 
 <img src="after_undistort/left02.png" alt="after_undistort"  width="400" />
 
